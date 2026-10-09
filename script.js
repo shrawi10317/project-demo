@@ -3,9 +3,9 @@
    EDIT THE TWO CONFIG BLOCKS BELOW. Everything else just works.
 ========================================================= */
 
-/* 1) YOUR PROJECTS: paste each Google Drive share link into "video".
-      (Drive: right-click the video > Share > "Anyone with the link" > Copy link)
-      "poster" is an optional cover image for the card (assets/images/...). */
+/* 1) YOUR PROJECTS
+      video : your Google Drive share link (Anyone with the link > Viewer)
+      poster: OPTIONAL cover image. If you leave it, the card uses Drive's own video thumbnail. */
 const PROJECTS = [
   {
     title: "Smart Internship Portal",
@@ -53,14 +53,23 @@ const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 document.documentElement.classList.add("js");
 
+/* ---------- Google Drive helpers ---------- */
+function driveId(link) {
+  const m = (link || "").match(/\/d\/([^/?#]+)/) || (link || "").match(/[?&]id=([^&]+)/);
+  return m ? m[1] : "";
+}
+const driveEmbed = link => driveId(link) ? `https://drive.google.com/file/d/${driveId(link)}/preview` : "about:blank";
+/* Card cover: your own poster if you set one, otherwise Drive's automatic thumbnail */
+const thumb = p => p.poster || `https://drive.google.com/thumbnail?id=${driveId(p.video)}&sz=w1280`;
+
 /* ---------- Build the project cards and the types grid ---------- */
 $("#projectList").innerHTML = PROJECTS.map((p, i) => `
   <article class="proj rv" data-i="${i}">
     <div class="media">
-      <div class="ph" style="--poster:url('${p.poster}')">
+      <div class="ph" style="--poster:url('${thumb(p)}')">
         <span class="num">0${i + 1}</span>
-        <button data-play aria-label="Play ${p.title} demo"><i class="fa-solid fa-play"></i></button>
-        <small>Demo video preview</small>
+        <button data-watch aria-label="Watch ${p.title} demo"><i class="fa-solid fa-play"></i></button>
+        <small>Click to watch the demo</small>
       </div>
     </div>
     <div class="body">
@@ -90,31 +99,82 @@ document.addEventListener("click", e => {
   btn.textContent = open ? "Hide Details" : "View Details";
 });
 
-/* ---------- Video modal (plays a Google Drive video in an iframe) ---------- */
-const modal = $("#modal"), frame = $("#modalFrame");
-let lastFocus = null;
+/* ---------- Video modal (Google Drive player) ----------
+   Speed trick: the Drive player starts loading as soon as the visitor hovers or touches
+   a play button, so it is usually ready by the time the pop-up opens. */
+/* The pop-up is created here, so you do NOT need any modal code in index.html */
+const MODAL_HTML = `
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="modalTitle"></h3>
+      <button id="modalClose" aria-label="Close video"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-frame">
+      <iframe id="modalFrame" title="Project demo video" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      <div class="spin" id="modalSpin"></div>
+    </div>
+    <p class="vmiss" id="modalSlow" hidden>Taking long? <a id="modalOpen" href="#" target="_blank" rel="noopener">Open in Google Drive</a></p>
+  </div>
+</div>`;
+const oldModal = $("#modal");
+if (oldModal) oldModal.remove();                        // remove any old pop-up from index.html
+document.body.insertAdjacentHTML("beforeend", MODAL_HTML);
 
-/* Turns any Google Drive share link into an embeddable /preview link */
-function driveEmbed(link) {
-  const m = link.match(/\/d\/([^/?#]+)/) || link.match(/[?&]id=([^&]+)/);
-  return m ? `https://drive.google.com/file/d/${m[1]}/preview` : "about:blank";
+const modal = $("#modal"), frame = $("#modalFrame"), spin = $("#modalSpin");
+const slow = $("#modalSlow"), openLink = $("#modalOpen");
+let lastFocus = null, loadedUrl = "", slowTimer = null;
+
+function prime(project) {                               // start loading early
+  const url = driveEmbed(project.video);
+  if (url === "about:blank" || url === loadedUrl) return;
+  loadedUrl = url;
+  frame.dataset.ready = "0";
+  frame.src = url;
 }
+
+frame.addEventListener("load", () => {                  // the Drive player finished loading
+  if (loadedUrl && frame.getAttribute("src") === loadedUrl) {
+    frame.dataset.ready = "1";
+    spin.hidden = true;
+    slow.hidden = true;
+    clearTimeout(slowTimer);
+  }
+});
 
 function openModal(project) {
   lastFocus = document.activeElement;
   $("#modalTitle").textContent = project.title + " Demo";
-  frame.src = driveEmbed(project.video);
+  prime(project);
+  openLink.href = project.video;
+  slow.hidden = true;
+  clearTimeout(slowTimer);
+  if (frame.dataset.ready === "1") spin.hidden = true;
+  else {
+    spin.hidden = false;
+    slowTimer = setTimeout(() => { slow.hidden = false; }, 8000);   // still loading after 8 s: offer a Drive link
+  }
   modal.hidden = false;
   document.body.style.overflow = "hidden";
   $("#modalClose").focus();
 }
 
 function closeModal() {
+  clearTimeout(slowTimer);
   frame.src = "about:blank";                            // stops the video
+  loadedUrl = "";
+  frame.dataset.ready = "0";
   modal.hidden = true;
   document.body.style.overflow = "";
   if (lastFocus) lastFocus.focus();
 }
+
+/* Warm up the player on hover / touch / keyboard focus */
+["pointerover", "touchstart", "focusin"].forEach(ev =>
+  document.addEventListener(ev, e => {
+    const w = e.target.closest && e.target.closest("[data-watch]");
+    if (w) prime(PROJECTS[w.closest(".proj").dataset.i]);
+  }, { passive: true }));
 
 document.addEventListener("click", e => {
   const watch = e.target.closest("[data-watch]");
@@ -123,16 +183,6 @@ document.addEventListener("click", e => {
 $("#modalClose").addEventListener("click", closeModal);
 modal.addEventListener("click", e => { if (e.target === modal) closeModal(); });   // click dark overlay
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !modal.hidden) closeModal(); });
-
-/* ---------- Play the video inside the card when the round play button is clicked ---------- */
-document.addEventListener("click", e => {
-  const play = e.target.closest("[data-play]");
-  if (!play) return;
-  const card = play.closest(".proj");
-  const p = PROJECTS[card.dataset.i];
-  $(".media", card).innerHTML =
-    `<iframe src="${driveEmbed(p.video)}" title="${p.title} demo" allow="autoplay; fullscreen" allowfullscreen></iframe>`;
-});
 
 /* ---------- Mobile navigation ---------- */
 const burger = $("#burger"), links = $("#links");

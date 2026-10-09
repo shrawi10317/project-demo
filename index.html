@@ -278,11 +278,13 @@
             <button id="modalClose" aria-label="Close video"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-frame">
-            <iframe id="modalFrame" title="Project demo video" allow="autoplay; fullscreen" allowfullscreen></iframe>
+            <video id="modalVideo" controls playsinline preload="auto"></video>
+            <iframe id="modalFrame" title="Project demo video" allow="autoplay; fullscreen" allowfullscreen hidden></iframe>
+            <div class="spin" id="modalSpin" hidden></div>
         </div>
+        <p class="vmiss" id="modalMiss" hidden>Video could not be loaded. Please try again later.</p>
     </div>
 </div>
-
     <script src="script.js"></script>
 </body>
 

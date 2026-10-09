@@ -920,3 +920,212 @@ h2 {
     height: 100%;
     border: 0
 }
+
+/* Fast video: real <video> in cards and pop-up */
+.media video {
+    opacity: 1;
+    background: linear-gradient(145deg, #111a2e, #0b1220);
+    object-fit: contain
+}
+
+.media iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0
+}
+
+.modal-frame video,
+.modal-frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000
+}
+
+.modal-frame [hidden],
+.vmiss[hidden] {
+    display: none !important
+}
+
+.spin {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 42px;
+    height: 42px;
+    margin: -21px 0 0 -21px;
+    border: 4px solid rgba(255, 255, 255, .25);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+    pointer-events: none
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg)
+    }
+}
+
+/* Drive pop-up: spinner + "taking long" hint */
+.vmiss a {
+    color: #5eead4;
+    text-decoration: underline
+}
+
+.modal-frame iframe {
+    background: #0b1220
+}
+
+/* Keep the closed pop-up laid out (not display:none) so the Drive player can preload and render correctly */
+.modal[hidden] {
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none
+}
+
+.modal {
+    transition: opacity .2s
+}
+
+.modal-frame {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: #000;
+    min-height: 200px
+}
+
+.modal-box {
+    width: min(900px, 100%)
+}
+
+/* ===== Mobile polish ===== */
+html {
+    -webkit-text-size-adjust: 100%
+}
+
+img,
+svg {
+    max-width: 100%
+}
+
+/* The pop-up video keeps a 16:9 shape and never grows taller than the screen (helps phones in landscape) */
+.modal-frame {
+    width: min(100%, calc((100vh - 96px)*16/9));
+    margin: 0 auto
+}
+
+@supports(height:100dvh) {
+    .modal-frame {
+        width: min(100%, calc((100dvh - 96px)*16/9))
+    }
+}
+
+@media(max-width:960px) {
+    .burger {
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center
+    }
+
+    .links {
+        max-height: calc(100vh - var(--nav));
+        overflow-y: auto
+    }
+
+    .media {
+        min-height: 0;
+        aspect-ratio: 16/9
+    }
+}
+
+@media(max-width:560px) {
+    .wrap {
+        padding: 0 18px
+    }
+
+    .hero {
+        padding: 44px 0 56px
+    }
+
+    h1 {
+        font-size: clamp(28px, 8vw, 34px)
+    }
+
+    .lead {
+        font-size: 16px
+    }
+
+    .trust {
+        gap: 12px 18px
+    }
+
+    .body {
+        padding: 20px 18px
+    }
+
+    .body h3 {
+        font-size: 22px
+    }
+
+    .pbtns .btn {
+        flex: 1 1 100%
+    }
+
+    .ph button {
+        width: 60px;
+        height: 60px
+    }
+
+    .ph .num {
+        font-size: 48px
+    }
+
+    .reach {
+        flex-direction: column;
+        align-items: stretch
+    }
+
+    .reach a {
+        justify-content: flex-start
+    }
+
+    .foot-in {
+        flex-direction: column;
+        align-items: center;
+        text-align: center
+    }
+
+    .foot nav {
+        flex-wrap: wrap;
+        justify-content: center
+    }
+
+    .modal {
+        padding: 10px
+    }
+
+    .modal-head {
+        padding: 6px 6px 6px 14px
+    }
+
+    .modal-head h3 {
+        font-size: 16px
+    }
+
+    .modal-head button {
+        width: 44px;
+        height: 44px
+    }
+
+    .top {
+        right: 14px;
+        bottom: 14px
+    }
+}

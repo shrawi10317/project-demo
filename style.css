@@ -1129,3 +1129,89 @@ svg {
         bottom: 14px
     }
 }
+
+/* ===== Pop-up fit on phones ===== */
+.tip {
+    display: none;
+    margin: 0;
+    padding: 10px 14px 14px;
+    color: #94a3b8;
+    font-size: 13px;
+    text-align: center
+}
+
+@media(max-width:700px) {
+    .modal {
+        padding: 0;
+        align-items: center
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0
+    }
+
+    .modal-frame {
+        width: 100%;
+        max-width: 100%;
+        min-height: 0;
+        aspect-ratio: 16/9;
+        margin: 0
+    }
+}
+
+/* Portrait phone: full-width 16:9 player + a hint to rotate */
+@media(max-width:700px) and (orientation:portrait) {
+    .tip {
+        display: block
+    }
+}
+
+/* Phone turned sideways: the player fills the whole screen under the title bar */
+@media(max-height:520px) and (orientation:landscape) {
+    .modal {
+        padding: 0
+    }
+
+    .modal-box {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0
+    }
+
+    .modal-frame {
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        aspect-ratio: auto;
+        margin: 0
+    }
+
+    .modal-head {
+        padding: 4px 6px 4px 14px
+    }
+
+    .tip {
+        display: none
+    }
+}
+
+/* ===== Phone pop-up: taller player so nothing is cropped, plus a link to the full Drive view ===== */
+.tip a {
+    color: #5eead4;
+    text-decoration: underline
+}
+
+@media(max-width:700px) and (orientation:portrait) {
+    .modal-frame {
+        aspect-ratio: 4/3
+    }
+
+    .tip {
+        display: block
+    }
+}

@@ -114,7 +114,8 @@ const MODAL_HTML = `
       <iframe id="modalFrame" title="Project demo video" allow="autoplay; fullscreen" allowfullscreen></iframe>
       <div class="spin" id="modalSpin"></div>
     </div>
-    <p class="vmiss" id="modalSlow" hidden>Taking long? <a id="modalOpen" href="#" target="_blank" rel="noopener">Open in Google Drive</a></p>
+    <p class="tip">Video looks cut off? <a class="open-drive" href="#" target="_blank" rel="noopener">Open full view in Google Drive</a>, or turn your phone sideways.</p>
+    <p class="vmiss" id="modalSlow" hidden>Taking long? <a class="open-drive" href="#" target="_blank" rel="noopener">Open in Google Drive</a></p>
   </div>
 </div>`;
 const oldModal = $("#modal");
@@ -122,7 +123,7 @@ if (oldModal) oldModal.remove();                        // remove any old pop-up
 document.body.insertAdjacentHTML("beforeend", MODAL_HTML);
 
 const modal = $("#modal"), frame = $("#modalFrame"), spin = $("#modalSpin");
-const slow = $("#modalSlow"), openLink = $("#modalOpen");
+const slow = $("#modalSlow");
 let lastFocus = null, loadedUrl = "", slowTimer = null;
 
 function prime(project) {                               // start loading early
@@ -146,7 +147,7 @@ function openModal(project) {
   lastFocus = document.activeElement;
   $("#modalTitle").textContent = project.title + " Demo";
   prime(project);
-  openLink.href = project.video;
+  $$(".open-drive").forEach(a => { a.href = project.video; });
   slow.hidden = true;
   clearTimeout(slowTimer);
   if (frame.dataset.ready === "1") spin.hidden = true;

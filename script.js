@@ -161,15 +161,25 @@ document.body.insertAdjacentHTML("beforeend", `
 const modal = $("#modal"), box = $(".modal-box"), frame = $("#modalFrame"), spin = $("#modalSpin"), slow = $("#modalSlow");
 let lastFocus = null, loadedUrl = "", slowTimer = null;
 const fbox = $(".modal-frame");
-function fit() {          /* Drive lays its player out for the iframe size. On a phone that is too small, so we
-                             give it 640px (desktop layout) and shrink it with CSS scale to fit the pop-up. */
+function fit() {
   const w = fbox.clientWidth, h = fbox.clientHeight, B = 640;
   if (!w) return;
-  if (w >= B) { Object.assign(frame.style, { width: "100%", height: "100%", transform: "none" }); return; }
+  const landscapeFS = document.fullscreenElement && w > h;   // fullscreen + sideways: no scaling
+  if (w >= B || landscapeFS) {
+    Object.assign(frame.style, { width: "100%", height: "100%", transform: "none" });
+    return;
+  }
   const s = w / B;
   Object.assign(frame.style, { width: B + "px", height: (h / s) + "px", transform: `scale(${s})` });
 }
 new ResizeObserver(fit).observe(fbox);
+
+/* Re-fit after rotation: phones report the new size a moment late */
+const refit = () => [0, 150, 500].forEach(t => setTimeout(fit, t));
+addEventListener("resize", refit);
+addEventListener("orientationchange", refit);
+if (screen.orientation) screen.orientation.addEventListener("change", refit);
+
 
 function prime(p) {                                    // warm up the Drive player on hover / touch
   const url = driveEmbed(p.video);
@@ -232,7 +242,7 @@ $("#modalFs").addEventListener("click", async () => {   // fullscreen the whole 
 });
 document.addEventListener("fullscreenchange", () => {
   const fs = !!document.fullscreenElement;
-  setTimeout(fit, 60);
+  [60, 300, 800].forEach(t => setTimeout(fit, t));
   $("#modalFs i").className = fs ? "fa-solid fa-compress" : "fa-solid fa-expand";
   if (!fs && screen.orientation && screen.orientation.unlock) screen.orientation.unlock();
 });

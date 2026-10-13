@@ -161,17 +161,38 @@ document.body.insertAdjacentHTML("beforeend", `
 const modal = $("#modal"), box = $(".modal-box"), frame = $("#modalFrame"), spin = $("#modalSpin"), slow = $("#modalSlow");
 let lastFocus = null, loadedUrl = "", slowTimer = null;
 const fbox = $(".modal-frame");
+
 function fit() {
-  const w = fbox.clientWidth, h = fbox.clientHeight, B = 640;
-  if (!w) return;
-  const landscapeFS = document.fullscreenElement && w > h;   // fullscreen + sideways: no scaling
-  if (w >= B || landscapeFS) {
-    Object.assign(frame.style, { width: "100%", height: "100%", transform: "none" });
-    return;
-  }
-  const s = w / B;
-  Object.assign(frame.style, { width: B + "px", height: (h / s) + "px", transform: `scale(${s})` });
+    const w = fbox.clientWidth;
+    const h = fbox.clientHeight;
+
+    if (!w || !h) return;
+
+    const landscape = window.matchMedia(
+        "(orientation: landscape)"
+    ).matches;
+
+    const fullscreen = !!document.fullscreenElement;
+
+    if (landscape || fullscreen || w >= 640) {
+        Object.assign(frame.style, {
+            width: "100%",
+            height: "100%",
+            transform: "none"
+        });
+        return;
+    }
+
+    const scale = w / 640;
+
+    Object.assign(frame.style, {
+        width: "640px",
+        height: (h / scale) + "px",
+        transform: `scale(${scale})`,
+        transformOrigin: "top left"
+    });
 }
+
 new ResizeObserver(fit).observe(fbox);
 
 /* Re-fit after rotation: phones report the new size a moment late */

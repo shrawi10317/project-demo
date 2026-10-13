@@ -2405,3 +2405,319 @@ h2 {
   width:40px;height:40px;font-size:16px;border-radius:50%;
   background:rgba(0,0,0,.55);opacity:.75;
 }
+
+
+
+/* ===== Mobile landscape layout fix ===== */
+@media screen and (max-width: 960px) and (orientation: landscape) {
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    .wrap {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Keep navigation usable in landscape */
+    .nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .links {
+        max-height: calc(100dvh - var(--nav, 60px));
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    /* Avoid oversized hero content on short screens */
+    .hero {
+        padding-top: clamp(20px, 5vh, 40px);
+        padding-bottom: clamp(24px, 6vh, 44px);
+    }
+
+    .hero-in {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 24px;
+    }
+
+    .hero-in > * {
+        min-width: 0;
+    }
+
+    .show {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    h1 {
+        font-size: clamp(25px, 4.5vw, 42px);
+        line-height: 1.15;
+    }
+
+    .lead {
+        font-size: 14px;
+    }
+
+    /* Project cards fit the available width */
+    .proj {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 20px;
+    }
+
+    .proj > * {
+        min-width: 0;
+    }
+
+    /* Video dialog uses the actual landscape viewport */
+    .modal {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        height: 100dvh;
+        padding: 0;
+        overflow: auto;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: none;
+        max-height: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 8px;
+        border-radius: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+        overflow: auto;
+    }
+
+    .modal-head {
+        flex: 0 0 auto;
+        min-height: 36px;
+        padding: 0 4px;
+    }
+
+    .modal-head h3 {
+        font-size: 14px;
+        margin: 0;
+    }
+
+    .modal-frame {
+        flex: 0 1 auto;
+        width: min(100%, calc((100dvh - 58px) * 16 / 9));
+        max-width: 100%;
+        aspect-ratio: 16 / 9;
+        height: auto;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+
+    #modalFrame {
+        display: block;
+        border: 0;
+        max-width: 100%;
+    }
+
+    .tip,
+    .vmiss {
+        font-size: 11px;
+        margin: 0;
+        text-align: center;
+    }
+
+    /* Keep the intro screen from overflowing */
+    #splash {
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding: 12px;
+        overflow: hidden;
+    }
+
+    #splash .s-chip,
+    #splash .s-load {
+        display: none;
+    }
+}
+
+/* Extra-short landscape screens */
+@media screen and (max-height: 450px) and (orientation: landscape) {
+    .modal-box {
+        padding: 4px;
+        gap: 2px;
+    }
+
+    .modal-head {
+        min-height: 28px;
+    }
+
+    .modal-head h3 {
+        font-size: 12px;
+    }
+
+    .modal-frame {
+        width: min(100%, calc((100dvh - 36px) * 16 / 9));
+    }
+
+    .tip,
+    .vmiss {
+        display: none !important;
+    }
+
+    .hero-in {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 14px;
+    }
+}
+
+
+
+/* ===== Services and Pricing ===== */
+.pricing-card {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    background: #fff;
+    border: 1px solid var(--line);
+}
+
+.pricing-card > div {
+    min-width: 0;
+}
+
+.pricing-card h3 {
+    margin: 14px 0 8px;
+    font-size: clamp(20px, 2.5vw, 26px);
+}
+
+.pricing-card p {
+    color: var(--mut);
+    margin: 0 0 8px;
+    line-height: 1.7;
+}
+
+.pricing-card .pricing-note {
+    font-weight: 700;
+    color: var(--accent-d);
+}
+
+.pricing-card .btn {
+    flex-shrink: 0;
+}
+
+/* ===== FAQ ===== */
+.faq-list {
+    display: grid;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.faq-item {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0 20px;
+    box-shadow: var(--shadow);
+}
+
+.faq-item summary {
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+    padding: 19px 32px 19px 0;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-item summary::after {
+    content: "+";
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--accent-d);
+}
+
+.faq-item[open] summary::after {
+    content: "−";
+}
+
+.faq-item p {
+    margin: 0 0 18px;
+    color: var(--mut);
+    line-height: 1.75;
+}
+
+.faq-link {
+    display: inline-block;
+    margin: 0 0 18px;
+    color: var(--accent-d);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.faq-link:hover {
+    text-decoration: underline;
+}
+
+.faq-contact {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.faq-contact p {
+    margin-bottom: 16px;
+    color: var(--mut);
+}
+
+/* Small screens and mobile landscape */
+@media (max-width: 600px) {
+    .pricing-card {
+        align-items: stretch;
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .pricing-card .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .faq-item {
+        padding-inline: 15px;
+    }
+
+    .faq-item summary {
+        font-size: 15px;
+    }
+}
+
+@media (max-height: 450px) and (orientation: landscape) {
+    .pricing-card {
+        gap: 14px;
+    }
+
+    .faq-list {
+        gap: 8px;
+    }
+}

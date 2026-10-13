@@ -2131,3 +2131,261 @@ h2 {
         background-position: 0 0, 100% 100%
     }
 }
+
+/* ===== Phones turned sideways (landscape): short screens need a compact, two-column layout ===== */
+@media (max-height:520px) and (orientation:landscape) {
+    :root {
+        --nav: 52px;
+        --sec: 44px
+    }
+
+    .logo {
+        font-size: 18px
+    }
+
+    .mk {
+        width: 26px;
+        height: 26px
+    }
+
+    .burger {
+        width: 40px;
+        height: 40px
+    }
+
+    /* menu opens as two columns so it does not need scrolling */
+    .links.open {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 24px;
+        padding: 4px max(24px, env(safe-area-inset-left)) 14px
+    }
+
+    .links a:not(.btn) {
+        padding: 10px 0;
+        font-size: 15px
+    }
+
+    .links .btn {
+        grid-column: 1/-1;
+        margin-top: 8px;
+        min-height: 42px
+    }
+
+    /* hero: text on the left, laptop on the right */
+    .hero {
+        padding: 22px 0 32px
+    }
+
+    .hero-in {
+        grid-template-columns: 1.1fr .9fr;
+        gap: 24px
+    }
+
+    h1 {
+        font-size: clamp(22px, 6.2vh, 30px)
+    }
+
+    .lead {
+        font-size: 14px;
+        margin-top: 10px
+    }
+
+    .badge {
+        margin-bottom: 10px;
+        font-size: 11px;
+        padding: 4px 10px
+    }
+
+    .type-line {
+        width: 100%;
+        margin-top: 12px;
+        padding: 6px 12px;
+        font-size: 13px;
+        border-radius: 999px;
+        align-items: center
+    }
+
+    .tl-word {
+        min-height: 1.6em;
+        align-items: center
+    }
+
+    .actions {
+        margin-top: 14px;
+        gap: 8px
+    }
+
+    .btn {
+        min-height: 40px;
+        padding: 8px 16px;
+        font-size: 14px
+    }
+
+    .actions .btn {
+        flex: 0 1 auto
+    }
+
+    .trust,
+    .pills {
+        display: none
+    }
+
+    .show {
+        max-width: 340px
+    }
+
+    .cap {
+        margin-top: 26px;
+        flex-direction: row;
+        align-items: center
+    }
+
+    .cap>div {
+        flex: 1 1 140px;
+        width: auto
+    }
+
+    /* sections */
+    h2 {
+        font-size: clamp(22px, 6vh, 28px)
+    }
+
+    .sub {
+        font-size: 14px;
+        margin-top: 8px
+    }
+
+    .grid3 {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+        gap: 12px;
+        margin-top: 22px
+    }
+
+    .card {
+        padding: 16px
+    }
+
+    .ic {
+        width: 38px;
+        height: 38px;
+        margin-bottom: 10px
+    }
+
+    .type {
+        padding: 12px 14px
+    }
+
+    .projects {
+        margin-top: 22px;
+        gap: 18px
+    }
+
+    .proj {
+        grid-template-columns: 1fr 1fr
+    }
+
+    .media {
+        aspect-ratio: auto;
+        min-height: 230px
+    }
+
+    .body {
+        padding: 18px;
+        gap: 10px
+    }
+
+    .body h3 {
+        font-size: 20px
+    }
+
+    .feat {
+        grid-template-columns: 1fr
+    }
+
+    .pbtns .btn {
+        flex: 1 1 auto
+    }
+
+    .steps {
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr));
+        gap: 18px 14px
+    }
+
+    .steps li {
+        border-top: 2px solid #d3dcee;
+        border-left: 0;
+        padding: 22px 0 0
+    }
+
+    .steps li::before {
+        top: -6px;
+        left: 0
+    }
+
+    .why {
+        grid-template-columns: 1fr 1.3fr;
+        gap: 20px
+    }
+
+    .why li {
+        padding: 10px 14px
+    }
+
+    .cta {
+        padding: 34px 0
+    }
+
+    .cta p {
+        font-size: 15px
+    }
+
+    .foot {
+        padding-top: 30px
+    }
+
+    .foot-in {
+        flex-direction: row;
+        text-align: left;
+        align-items: flex-start
+    }
+
+    .top {
+        width: 40px;
+        height: 40px;
+        right: max(12px, env(safe-area-inset-right));
+        bottom: 12px
+    }
+
+    /* splash: smaller so everything fits in the short screen */
+    #splash {
+        padding: 12px
+    }
+
+    #splash .s-chip,
+    #splash .s-load,
+    #splash .s-ring,
+    #splash .s-dot {
+        display: none
+    }
+
+    .s-logo,
+    .s-mk {
+        width: 52px;
+        height: 52px
+    }
+
+    .s-hi {
+        margin-top: 12px;
+        font-size: 12px
+    }
+
+    .s-name {
+        font-size: clamp(28px, 9vh, 42px)
+    }
+
+    .s-sub {
+        margin-top: 6px;
+        font-size: 13px
+    }
+}
